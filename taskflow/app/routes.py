@@ -133,10 +133,14 @@ def api_delete_swimlane(swimlane_id):
 @login_required
 def api_tasks():
     if request.method == 'POST':
+        from datetime import datetime
+
         data = request.get_json()
         title = data.get('title', '').strip()
         description = data.get('description', '').strip()
         swimlane_id = data.get('swimlane_id')
+        priority = data.get('priority', 'Medium')
+        due_date_str = data.get('due_date')
 
         if not title or not swimlane_id:
             return jsonify({'success': False, 'error': 'Title and swimlane are required'}), 400
@@ -146,12 +150,22 @@ def api_tasks():
         if not swimlane:
             return jsonify({'success': False, 'error': 'Invalid swimlane'}), 400
 
+        # Parse due date
+        due_date = None
+        if due_date_str:
+            try:
+                due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date()
+            except ValueError:
+                return jsonify({'success': False, 'error': 'Invalid due date format'}), 400
+
         task = Task(
             title=title,
             description=description,
             swimlane_id=swimlane_id,
             user_id=current_user.id,
-            status='Backlog'
+            status='Backlog',
+            priority=priority,
+            due_date=due_date
         )
         db.session.add(task)
         db.session.commit()
@@ -166,6 +180,8 @@ def api_tasks():
 @main.route('/api/tasks/<int:task_id>', methods=['PUT', 'DELETE'])
 @login_required
 def api_task(task_id):
+    from datetime import datetime
+
     task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
     if not task:
         return jsonify({'success': False, 'error': 'Task not found'}), 404
@@ -180,6 +196,18 @@ def api_task(task_id):
         if 'status' in data:
             if data['status'] in ['Backlog', 'In Progress', 'Complete']:
                 task.status = data['status']
+        if 'priority' in data:
+            if data['priority'] in ['High', 'Medium', 'Low']:
+                task.priority = data['priority']
+        if 'due_date' in data:
+            due_date_str = data['due_date']
+            if due_date_str:
+                try:
+                    task.due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    return jsonify({'success': False, 'error': 'Invalid due date format'}), 400
+            else:
+                task.due_date = None
 
         db.session.commit()
         return jsonify({'success': True, 'task': task.to_dict()})

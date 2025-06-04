@@ -10,7 +10,7 @@
     }
 
     .header {
-        color: #333;
+        color: #e2e8f0;
         margin-bottom: 2rem;
         text-align: center;
     }
@@ -19,64 +19,75 @@
         font-size: 2rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
 
     .controls {
-        background: white;
-        border-radius: 12px;
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
-        align-items: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        align-items: end;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        border: 1px solid rgba(51, 65, 85, 0.5);
     }
 
     .input-group {
         display: flex;
         gap: 0.5rem;
         align-items: center;
+        flex-wrap: wrap;
     }
 
     input, textarea, button, select {
         padding: 0.5rem 1rem;
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
+        border: 1px solid #475569;
+        border-radius: 8px;
         font-size: 0.9rem;
+        background: rgba(51, 65, 85, 0.5);
+        color: #e2e8f0;
+        backdrop-filter: blur(10px);
     }
 
     input:focus, textarea:focus, select:focus {
         outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+    }
+
+    input::placeholder, textarea::placeholder {
+        color: #64748b;
     }
 
     button {
-        background: #667eea;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
         color: white;
         border: none;
         cursor: pointer;
         font-weight: 500;
-        transition: background-color 0.2s;
+        transition: all 0.2s;
     }
 
     button:hover {
-        background: #5a67d8;
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        transform: translateY(-1px);
     }
 
     .delete-btn {
-        background: #e53e3e;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
         padding: 0.25rem 0.5rem;
         font-size: 0.8rem;
     }
 
     .delete-btn:hover {
-        background: #c53030;
+        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
     }
 
     .swimlanes {
@@ -86,10 +97,12 @@
     }
 
     .swimlane {
-        background: white;
-        border-radius: 12px;
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
         padding: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        border: 1px solid rgba(51, 65, 85, 0.5);
     }
 
     .swimlane-header {
@@ -98,13 +111,13 @@
         align-items: center;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid #f1f5f9;
+        border-bottom: 2px solid rgba(51, 65, 85, 0.5);
     }
 
     .swimlane-title {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #2d3748;
+        color: #f1f5f9;
     }
 
     .kanban-board {
@@ -114,47 +127,114 @@
     }
 
     .kanban-column {
-        background: #f8fafc;
-        border-radius: 8px;
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 12px;
         padding: 1rem;
         min-height: 300px;
+        border: 1px solid rgba(51, 65, 85, 0.3);
+        transition: all 0.2s;
     }
 
     .column-header {
         font-weight: 600;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid rgba(51, 65, 85, 0.5);
         display: flex;
         justify-content: space-between;
         align-items: center;
+        color: #cbd5e1;
     }
 
     .task {
-        background: white;
-        border-radius: 6px;
+        background: rgba(51, 65, 85, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 8px;
         padding: 1rem;
         margin-bottom: 0.75rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         cursor: move;
-        border-left: 3px solid #667eea;
-        transition: box-shadow 0.2s;
+        border-left: 3px solid;
+        transition: all 0.2s;
+        user-select: none;
     }
 
     .task:hover {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        transform: translateY(-2px);
+    }
+
+    .task.dragging {
+        opacity: 0.5;
+        transform: rotate(5deg);
+    }
+
+    .task-priority-high {
+        border-left-color: #ef4444;
+    }
+
+    .task-priority-medium {
+        border-left-color: #f59e0b;
+    }
+
+    .task-priority-low {
+        border-left-color: #10b981;
     }
 
     .task-title {
         font-weight: 600;
         margin-bottom: 0.5rem;
-        color: #2d3748;
+        color: #f1f5f9;
     }
 
     .task-description {
-        color: #64748b;
+        color: #94a3b8;
         font-size: 0.85rem;
         margin-bottom: 0.75rem;
+    }
+
+    .task-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 0.8rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .task-priority {
+        padding: 0.2rem 0.5rem;
+        border-radius: 12px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    .priority-high {
+        background: rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .priority-medium {
+        background: rgba(245, 158, 11, 0.2);
+        color: #fcd34d;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .priority-low {
+        background: rgba(16, 185, 129, 0.2);
+        color: #86efac;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .task-due-date {
+        color: #94a3b8;
+    }
+
+    .task-overdue {
+        color: #fca5a5;
+        font-weight: 600;
     }
 
     .task-actions {
@@ -165,60 +245,57 @@
     .task-btn {
         padding: 0.25rem 0.5rem;
         font-size: 0.8rem;
-        border-radius: 4px;
+        border-radius: 6px;
     }
 
     .edit-btn {
-        background: #3b82f6;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+
+    .edit-btn:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
     }
 
     .drag-over {
-        background: #e0e7ff;
-    }
-
-    .task-form {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .task-form input {
-        flex: 1;
-        min-width: 150px;
-    }
-
-    .task-form textarea {
-        flex: 2;
-        min-width: 200px;
-        resize: vertical;
-        height: 60px;
+        background: rgba(96, 165, 250, 0.2) !important;
+        border-color: #60a5fa !important;
+        border-width: 2px !important;
+        transform: scale(1.02);
     }
 
     .error-message {
-        background: #fee2e2;
-        color: #dc2626;
+        background: rgba(239, 68, 68, 0.1);
+        color: #fca5a5;
         padding: 0.75rem;
-        border-radius: 4px;
+        border-radius: 8px;
         margin-bottom: 1rem;
-        border: 1px solid #fecaca;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        backdrop-filter: blur(10px);
     }
 
     .success-message {
-        background: #dcfce7;
-        color: #16a34a;
+        background: rgba(16, 185, 129, 0.1);
+        color: #86efac;
         padding: 0.75rem;
-        border-radius: 4px;
+        border-radius: 8px;
         margin-bottom: 1rem;
-        border: 1px solid #bbf7d0;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 1024px) {
+        .controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .input-group {
+            justify-content: center;
+        }
     }
 
     @media (max-width: 768px) {
         .kanban-board {
             grid-template-columns: 1fr;
-        }
-        .task-form {
-            flex-direction: column;
         }
     }
 </style>
@@ -236,9 +313,15 @@
             <button onclick="addSwimlane()">Add Swimlane</button>
         </div>
 
-        <div class="task-form">
+        <div class="input-group">
             <input type="text" id="task-title" placeholder="Task title" required>
-            <textarea id="task-description" placeholder="Description"></textarea>
+            <textarea id="task-description" placeholder="Description" style="height: 40px; resize: vertical;"></textarea>
+            <select id="task-priority">
+                <option value="Medium">Medium Priority</option>
+                <option value="High">High Priority</option>
+                <option value="Low">Low Priority</option>
+            </select>
+            <input type="date" id="task-due-date" title="Due Date">
             <select id="task-swimlane">
                 <option value="">Select swimlane</option>
             </select>
@@ -254,6 +337,7 @@
 <script>
     let swimlanes = {};
     let tasks = {};
+    let draggedTaskId = null;
 
     // Show messages to user
     function showMessage(message, type = 'error') {
@@ -262,7 +346,7 @@
         messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
         messageDiv.textContent = message;
         container.appendChild(messageDiv);
-        
+
         setTimeout(() => {
             messageDiv.remove();
         }, 5000);
@@ -271,46 +355,67 @@
     // Load initial data from database
     async function loadData() {
         try {
+            console.log('Loading data...');
+
             // Load swimlanes
             const swimlanesResponse = await fetch('/api/swimlanes');
             const swimlanesData = await swimlanesResponse.json();
-            
+
             // Load tasks
             const tasksResponse = await fetch('/api/tasks');
             const tasksData = await tasksResponse.json();
-            
+
+            console.log('Swimlanes:', swimlanesData);
+            console.log('Tasks:', tasksData);
+
             // Store data
             swimlanes = {};
             tasks = {};
-            
+
             swimlanesData.forEach(s => {
                 swimlanes[s.id] = s;
             });
-            
+
             tasksData.forEach(t => {
                 tasks[t.id] = t;
             });
-            
+
             // Render UI
             renderSwimlanes();
             updateSwimlaneSelect();
-            
+
         } catch (error) {
             console.error('Error loading data:', error);
             showMessage('Failed to load data');
         }
     }
 
+    // Format date for display
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    }
+
+    // Check if date is overdue
+    function isOverdue(dueDateString, status) {
+        if (!dueDateString || status === 'Complete') return false;
+        const dueDate = new Date(dueDateString);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return dueDate < today;
+    }
+
     // Render swimlanes
     function renderSwimlanes() {
         const container = document.getElementById('swimlanes-container');
         container.innerHTML = '';
-        
+
         Object.values(swimlanes).forEach(swimlane => {
             const swimlaneDiv = document.createElement('div');
             swimlaneDiv.className = 'swimlane';
             swimlaneDiv.dataset.swimlaneId = swimlane.id;
-            
+
             swimlaneDiv.innerHTML = `
                 <div class="swimlane-header">
                     <div class="swimlane-title">${swimlane.name}</div>
@@ -337,11 +442,11 @@
                     </div>
                 </div>
             `;
-            
+
             container.appendChild(swimlaneDiv);
             setupDragAndDrop(swimlaneDiv);
         });
-        
+
         renderTasks();
     }
 
@@ -349,7 +454,7 @@
     function renderTasks() {
         // Clear existing tasks
         document.querySelectorAll('.task').forEach(task => task.remove());
-        
+
         Object.values(tasks).forEach(task => {
             const taskElement = createTaskElement(task);
             const swimlaneDiv = document.querySelector(`[data-swimlane-id="${task.swimlane_id}"]`);
@@ -360,26 +465,35 @@
                 }
             }
         });
-        
+
         updateTaskCounts();
     }
 
     // Create task element
     function createTaskElement(task) {
         const taskDiv = document.createElement('div');
-        taskDiv.className = 'task';
+        taskDiv.className = `task task-priority-${(task.priority || 'medium').toLowerCase()}`;
         taskDiv.dataset.taskId = task.id;
         taskDiv.draggable = true;
-        
+
+        const overdue = isOverdue(task.due_date, task.status);
+        const dueDateClass = overdue ? 'task-overdue' : 'task-due-date';
+        const dueDateText = task.due_date ? formatDate(task.due_date) : '';
+        const overdueIndicator = overdue ? ' ⚠️' : '';
+
         taskDiv.innerHTML = `
             <div class="task-title">${task.title}</div>
             <div class="task-description">${task.description || ''}</div>
+            <div class="task-meta">
+                <span class="task-priority priority-${(task.priority || 'medium').toLowerCase()}">${task.priority || 'Medium'}</span>
+                ${dueDateText ? `<span class="${dueDateClass}">Due: ${dueDateText}${overdueIndicator}</span>` : ''}
+            </div>
             <div class="task-actions">
                 <button class="task-btn edit-btn" onclick="editTask(${task.id})">Edit</button>
                 <button class="task-btn delete-btn" onclick="deleteTask(${task.id})">Delete</button>
             </div>
         `;
-        
+
         setupTaskDrag(taskDiv);
         return taskDiv;
     }
@@ -402,7 +516,7 @@
             });
 
             const data = await response.json();
-            
+
             if (data.success) {
                 swimlanes[data.swimlane.id] = data.swimlane;
                 renderSwimlanes();
@@ -428,7 +542,7 @@
             });
 
             const data = await response.json();
-            
+
             if (data.success) {
                 delete swimlanes[swimlaneId];
                 // Remove tasks from this swimlane
@@ -453,13 +567,15 @@
     async function addTask() {
         const title = document.getElementById('task-title').value.trim();
         const description = document.getElementById('task-description').value.trim();
+        const priority = document.getElementById('task-priority').value;
+        const dueDate = document.getElementById('task-due-date').value;
         const swimlaneId = parseInt(document.getElementById('task-swimlane').value);
 
         if (!title) {
             showMessage('Please enter a task title');
             return;
         }
-        
+
         if (!swimlaneId) {
             showMessage('Please select a swimlane');
             return;
@@ -474,17 +590,20 @@
                 body: JSON.stringify({
                     title,
                     description,
+                    priority,
+                    due_date: dueDate || null,
                     swimlane_id: swimlaneId
                 })
             });
 
             const data = await response.json();
-            
+
             if (data.success) {
                 tasks[data.task.id] = data.task;
                 renderTasks();
                 document.getElementById('task-title').value = '';
                 document.getElementById('task-description').value = '';
+                document.getElementById('task-due-date').value = '';
                 showMessage('Task added successfully!', 'success');
             } else {
                 showMessage(data.error || 'Failed to add task');
@@ -502,9 +621,15 @@
 
         const newTitle = prompt('Edit title:', task.title);
         if (newTitle === null) return;
-        
+
         const newDescription = prompt('Edit description:', task.description || '');
         if (newDescription === null) return;
+
+        const newPriority = prompt('Edit priority (High/Medium/Low):', task.priority || 'Medium');
+        if (newPriority === null) return;
+
+        const newDueDate = prompt('Edit due date (YYYY-MM-DD or leave empty):', task.due_date || '');
+        if (newDueDate === null) return;
 
         try {
             const response = await fetch(`/api/tasks/${taskId}`, {
@@ -514,12 +639,14 @@
                 },
                 body: JSON.stringify({
                     title: newTitle.trim(),
-                    description: newDescription.trim()
+                    description: newDescription.trim(),
+                    priority: newPriority,
+                    due_date: newDueDate || null
                 })
             });
 
             const data = await response.json();
-            
+
             if (data.success) {
                 tasks[taskId] = data.task;
                 renderTasks();
@@ -543,7 +670,7 @@
             });
 
             const data = await response.json();
-            
+
             if (data.success) {
                 delete tasks[taskId];
                 renderTasks();
@@ -559,6 +686,8 @@
 
     // Update task status in database
     async function updateTaskStatus(taskId, newStatus) {
+        console.log(`Updating task ${taskId} to status ${newStatus} in database`);
+
         try {
             const response = await fetch(`/api/tasks/${taskId}`, {
                 method: 'PUT',
@@ -569,18 +698,23 @@
             });
 
             const data = await response.json();
-            
+
             if (data.success) {
+                // Update local task data
                 tasks[taskId] = data.task;
-                updateTaskCounts();
+                console.log(`✅ Task ${taskId} successfully updated to ${newStatus}`);
+                // Removed the success message
             } else {
+                console.error('Failed to update task:', data.error);
                 showMessage(data.error || 'Failed to update task status');
-                loadData(); // Reload data on error
+                // Reload the page to get correct state
+                location.reload();
             }
         } catch (error) {
             console.error('Error updating task status:', error);
             showMessage('Failed to update task status');
-            loadData(); // Reload data on error
+            // Reload the page to get correct state
+            location.reload();
         }
     }
 
@@ -590,7 +724,9 @@
         columns.forEach(col => {
             col.addEventListener('dragover', e => {
                 e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
                 col.classList.add('drag-over');
+                console.log('Drag over column:', col.dataset.status);
             });
 
             col.addEventListener('dragleave', e => {
@@ -605,10 +741,42 @@
 
                 const taskId = parseInt(e.dataTransfer.getData('text/plain'));
                 const newStatus = col.dataset.status;
-                
+
+                console.log(`Dropped task ${taskId} into ${newStatus}`);
+                console.log('Current task status:', tasks[taskId]?.status);
+
                 if (tasks[taskId] && tasks[taskId].status !== newStatus) {
+                    // Get the task element
+                    const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+
+                    if (taskElement) {
+                        // Immediately move the task to the dropped column (optimistic update)
+                        taskElement.remove();
+                        col.appendChild(taskElement);
+
+                        // Add visual feedback
+                        taskElement.style.transform = 'scale(0.95)';
+                        taskElement.style.opacity = '0.7';
+
+                        setTimeout(() => {
+                            taskElement.style.transform = 'scale(1)';
+                            taskElement.style.opacity = '1';
+                        }, 150);
+
+                        // Update task counts immediately
+                        updateTaskCounts();
+                    }
+
+                    // Update in database
                     updateTaskStatus(taskId, newStatus);
+                } else {
+                    console.log('Task status unchanged or task not found');
                 }
+
+                // Remove dragging class
+                document.querySelectorAll('.task.dragging').forEach(t => {
+                    t.classList.remove('dragging');
+                });
             });
         });
     }
@@ -616,7 +784,23 @@
     // Setup task drag
     function setupTaskDrag(task) {
         task.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', task.dataset.taskId);
+            const taskId = task.dataset.taskId;
+            e.dataTransfer.setData('text/plain', taskId);
+            e.dataTransfer.effectAllowed = 'move';
+            task.classList.add('dragging');
+            draggedTaskId = taskId;
+
+            console.log('Started dragging task:', taskId);
+        });
+
+        task.addEventListener('dragend', e => {
+            task.classList.remove('dragging');
+            draggedTaskId = null;
+
+            // Remove all drag-over classes
+            document.querySelectorAll('.drag-over').forEach(col => {
+                col.classList.remove('drag-over');
+            });
         });
     }
 
@@ -646,6 +830,7 @@
 
     // Initialize - load data from database
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing...');
         loadData();
     });
 </script>

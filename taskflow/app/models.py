@@ -43,6 +43,8 @@ class Task(db.Model):
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(20), default='Backlog')  # Backlog, In Progress, Complete
+    priority = db.Column(db.String(10), default='Medium')  # High, Medium, Low
+    due_date = db.Column(db.Date, nullable=True)
     swimlane_id = db.Column(db.Integer, db.ForeignKey('swimlane.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -54,7 +56,26 @@ class Task(db.Model):
             'title': self.title,
             'description': self.description,
             'status': self.status,
+            'priority': self.priority,
+            'due_date': self.due_date.isoformat() if self.due_date else None,
             'swimlane_id': self.swimlane_id,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
+
+    @property
+    def is_overdue(self):
+        """Check if task is overdue"""
+        if self.due_date and self.status != 'Complete':
+            return self.due_date < datetime.now().date()
+        return False
+
+    @property
+    def priority_color(self):
+        """Get color for priority"""
+        colors = {
+            'High': '#ef4444',  # Red
+            'Medium': '#f59e0b',  # Amber
+            'Low': '#10b981'  # Green
+        }
+        return colors.get(self.priority, '#6b7280')
