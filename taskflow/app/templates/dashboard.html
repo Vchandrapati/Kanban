@@ -1,0 +1,652 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TaskFlow{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .header {
+        color: #333;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .controls {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .input-group {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    input, textarea, button, select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    button {
+        background: #667eea;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+    button:hover {
+        background: #5a67d8;
+    }
+
+    .delete-btn {
+        background: #e53e3e;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .delete-btn:hover {
+        background: #c53030;
+    }
+
+    .swimlanes {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .swimlane {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .swimlane-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .swimlane-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .kanban-board {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .kanban-column {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1rem;
+        min-height: 300px;
+    }
+
+    .column-header {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .task {
+        background: white;
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        cursor: move;
+        border-left: 3px solid #667eea;
+        transition: box-shadow 0.2s;
+    }
+
+    .task:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .task-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+    }
+
+    .task-description {
+        color: #64748b;
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .task-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .task-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+        border-radius: 4px;
+    }
+
+    .edit-btn {
+        background: #3b82f6;
+    }
+
+    .drag-over {
+        background: #e0e7ff;
+    }
+
+    .task-form {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .task-form input {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .task-form textarea {
+        flex: 2;
+        min-width: 200px;
+        resize: vertical;
+        height: 60px;
+    }
+
+    .error-message {
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        border: 1px solid #fecaca;
+    }
+
+    .success-message {
+        background: #dcfce7;
+        color: #16a34a;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        border: 1px solid #bbf7d0;
+    }
+
+    @media (max-width: 768px) {
+        .kanban-board {
+            grid-template-columns: 1fr;
+        }
+        .task-form {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="header">
+        <h1>Kanban Dashboard</h1>
+    </div>
+
+    <div id="message-container"></div>
+
+    <div class="controls">
+        <div class="input-group">
+            <input type="text" id="swimlane-input" placeholder="Swimlane name">
+            <button onclick="addSwimlane()">Add Swimlane</button>
+        </div>
+
+        <div class="task-form">
+            <input type="text" id="task-title" placeholder="Task title" required>
+            <textarea id="task-description" placeholder="Description"></textarea>
+            <select id="task-swimlane">
+                <option value="">Select swimlane</option>
+            </select>
+            <button onclick="addTask()">Add Task</button>
+        </div>
+    </div>
+
+    <div class="swimlanes" id="swimlanes-container">
+        <!-- Swimlanes will be loaded here -->
+    </div>
+</div>
+
+<script>
+    let swimlanes = {};
+    let tasks = {};
+
+    // Show messages to user
+    function showMessage(message, type = 'error') {
+        const container = document.getElementById('message-container');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+        messageDiv.textContent = message;
+        container.appendChild(messageDiv);
+        
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 5000);
+    }
+
+    // Load initial data from database
+    async function loadData() {
+        try {
+            // Load swimlanes
+            const swimlanesResponse = await fetch('/api/swimlanes');
+            const swimlanesData = await swimlanesResponse.json();
+            
+            // Load tasks
+            const tasksResponse = await fetch('/api/tasks');
+            const tasksData = await tasksResponse.json();
+            
+            // Store data
+            swimlanes = {};
+            tasks = {};
+            
+            swimlanesData.forEach(s => {
+                swimlanes[s.id] = s;
+            });
+            
+            tasksData.forEach(t => {
+                tasks[t.id] = t;
+            });
+            
+            // Render UI
+            renderSwimlanes();
+            updateSwimlaneSelect();
+            
+        } catch (error) {
+            console.error('Error loading data:', error);
+            showMessage('Failed to load data');
+        }
+    }
+
+    // Render swimlanes
+    function renderSwimlanes() {
+        const container = document.getElementById('swimlanes-container');
+        container.innerHTML = '';
+        
+        Object.values(swimlanes).forEach(swimlane => {
+            const swimlaneDiv = document.createElement('div');
+            swimlaneDiv.className = 'swimlane';
+            swimlaneDiv.dataset.swimlaneId = swimlane.id;
+            
+            swimlaneDiv.innerHTML = `
+                <div class="swimlane-header">
+                    <div class="swimlane-title">${swimlane.name}</div>
+                    <button class="delete-btn" onclick="deleteSwimlane(${swimlane.id})">Delete</button>
+                </div>
+                <div class="kanban-board">
+                    <div class="kanban-column" data-status="Backlog">
+                        <div class="column-header">
+                            <span>Backlog</span>
+                            <span class="task-count">0</span>
+                        </div>
+                    </div>
+                    <div class="kanban-column" data-status="In Progress">
+                        <div class="column-header">
+                            <span>In Progress</span>
+                            <span class="task-count">0</span>
+                        </div>
+                    </div>
+                    <div class="kanban-column" data-status="Complete">
+                        <div class="column-header">
+                            <span>Complete</span>
+                            <span class="task-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(swimlaneDiv);
+            setupDragAndDrop(swimlaneDiv);
+        });
+        
+        renderTasks();
+    }
+
+    // Render tasks
+    function renderTasks() {
+        // Clear existing tasks
+        document.querySelectorAll('.task').forEach(task => task.remove());
+        
+        Object.values(tasks).forEach(task => {
+            const taskElement = createTaskElement(task);
+            const swimlaneDiv = document.querySelector(`[data-swimlane-id="${task.swimlane_id}"]`);
+            if (swimlaneDiv) {
+                const column = swimlaneDiv.querySelector(`[data-status="${task.status}"]`);
+                if (column) {
+                    column.appendChild(taskElement);
+                }
+            }
+        });
+        
+        updateTaskCounts();
+    }
+
+    // Create task element
+    function createTaskElement(task) {
+        const taskDiv = document.createElement('div');
+        taskDiv.className = 'task';
+        taskDiv.dataset.taskId = task.id;
+        taskDiv.draggable = true;
+        
+        taskDiv.innerHTML = `
+            <div class="task-title">${task.title}</div>
+            <div class="task-description">${task.description || ''}</div>
+            <div class="task-actions">
+                <button class="task-btn edit-btn" onclick="editTask(${task.id})">Edit</button>
+                <button class="task-btn delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+            </div>
+        `;
+        
+        setupTaskDrag(taskDiv);
+        return taskDiv;
+    }
+
+    // Add swimlane to database
+    async function addSwimlane() {
+        const name = document.getElementById('swimlane-input').value.trim();
+        if (!name) {
+            showMessage('Please enter a swimlane name');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/swimlanes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                swimlanes[data.swimlane.id] = data.swimlane;
+                renderSwimlanes();
+                updateSwimlaneSelect();
+                document.getElementById('swimlane-input').value = '';
+                showMessage('Swimlane added successfully!', 'success');
+            } else {
+                showMessage(data.error || 'Failed to add swimlane');
+            }
+        } catch (error) {
+            console.error('Error adding swimlane:', error);
+            showMessage('Failed to add swimlane');
+        }
+    }
+
+    // Delete swimlane from database
+    async function deleteSwimlane(swimlaneId) {
+        if (!confirm('Delete this swimlane and all its tasks?')) return;
+
+        try {
+            const response = await fetch(`/api/swimlanes/${swimlaneId}`, {
+                method: 'DELETE'
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                delete swimlanes[swimlaneId];
+                // Remove tasks from this swimlane
+                Object.keys(tasks).forEach(taskId => {
+                    if (tasks[taskId].swimlane_id === swimlaneId) {
+                        delete tasks[taskId];
+                    }
+                });
+                renderSwimlanes();
+                updateSwimlaneSelect();
+                showMessage('Swimlane deleted successfully!', 'success');
+            } else {
+                showMessage(data.error || 'Failed to delete swimlane');
+            }
+        } catch (error) {
+            console.error('Error deleting swimlane:', error);
+            showMessage('Failed to delete swimlane');
+        }
+    }
+
+    // Add task to database
+    async function addTask() {
+        const title = document.getElementById('task-title').value.trim();
+        const description = document.getElementById('task-description').value.trim();
+        const swimlaneId = parseInt(document.getElementById('task-swimlane').value);
+
+        if (!title) {
+            showMessage('Please enter a task title');
+            return;
+        }
+        
+        if (!swimlaneId) {
+            showMessage('Please select a swimlane');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title,
+                    description,
+                    swimlane_id: swimlaneId
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                tasks[data.task.id] = data.task;
+                renderTasks();
+                document.getElementById('task-title').value = '';
+                document.getElementById('task-description').value = '';
+                showMessage('Task added successfully!', 'success');
+            } else {
+                showMessage(data.error || 'Failed to add task');
+            }
+        } catch (error) {
+            console.error('Error adding task:', error);
+            showMessage('Failed to add task');
+        }
+    }
+
+    // Edit task in database
+    async function editTask(taskId) {
+        const task = tasks[taskId];
+        if (!task) return;
+
+        const newTitle = prompt('Edit title:', task.title);
+        if (newTitle === null) return;
+        
+        const newDescription = prompt('Edit description:', task.description || '');
+        if (newDescription === null) return;
+
+        try {
+            const response = await fetch(`/api/tasks/${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: newTitle.trim(),
+                    description: newDescription.trim()
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                tasks[taskId] = data.task;
+                renderTasks();
+                showMessage('Task updated successfully!', 'success');
+            } else {
+                showMessage(data.error || 'Failed to update task');
+            }
+        } catch (error) {
+            console.error('Error updating task:', error);
+            showMessage('Failed to update task');
+        }
+    }
+
+    // Delete task from database
+    async function deleteTask(taskId) {
+        if (!confirm('Delete this task?')) return;
+
+        try {
+            const response = await fetch(`/api/tasks/${taskId}`, {
+                method: 'DELETE'
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                delete tasks[taskId];
+                renderTasks();
+                showMessage('Task deleted successfully!', 'success');
+            } else {
+                showMessage(data.error || 'Failed to delete task');
+            }
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            showMessage('Failed to delete task');
+        }
+    }
+
+    // Update task status in database
+    async function updateTaskStatus(taskId, newStatus) {
+        try {
+            const response = await fetch(`/api/tasks/${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                tasks[taskId] = data.task;
+                updateTaskCounts();
+            } else {
+                showMessage(data.error || 'Failed to update task status');
+                loadData(); // Reload data on error
+            }
+        } catch (error) {
+            console.error('Error updating task status:', error);
+            showMessage('Failed to update task status');
+            loadData(); // Reload data on error
+        }
+    }
+
+    // Setup drag and drop for swimlane
+    function setupDragAndDrop(swimlane) {
+        const columns = swimlane.querySelectorAll('.kanban-column');
+        columns.forEach(col => {
+            col.addEventListener('dragover', e => {
+                e.preventDefault();
+                col.classList.add('drag-over');
+            });
+
+            col.addEventListener('dragleave', e => {
+                if (!col.contains(e.relatedTarget)) {
+                    col.classList.remove('drag-over');
+                }
+            });
+
+            col.addEventListener('drop', e => {
+                e.preventDefault();
+                col.classList.remove('drag-over');
+
+                const taskId = parseInt(e.dataTransfer.getData('text/plain'));
+                const newStatus = col.dataset.status;
+                
+                if (tasks[taskId] && tasks[taskId].status !== newStatus) {
+                    updateTaskStatus(taskId, newStatus);
+                }
+            });
+        });
+    }
+
+    // Setup task drag
+    function setupTaskDrag(task) {
+        task.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', task.dataset.taskId);
+        });
+    }
+
+    // Update swimlane select
+    function updateSwimlaneSelect() {
+        const select = document.getElementById('task-swimlane');
+        select.innerHTML = '<option value="">Select swimlane</option>';
+
+        Object.values(swimlanes).forEach(swimlane => {
+            const option = document.createElement('option');
+            option.value = swimlane.id;
+            option.textContent = swimlane.name;
+            select.appendChild(option);
+        });
+    }
+
+    // Update task counts
+    function updateTaskCounts() {
+        document.querySelectorAll('.kanban-column').forEach(col => {
+            const count = col.querySelectorAll('.task').length;
+            const countElement = col.querySelector('.task-count');
+            if (countElement) {
+                countElement.textContent = count;
+            }
+        });
+    }
+
+    // Initialize - load data from database
+    document.addEventListener('DOMContentLoaded', function() {
+        loadData();
+    });
+</script>
+{% endblock %}
